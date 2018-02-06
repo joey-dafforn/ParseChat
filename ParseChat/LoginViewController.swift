@@ -14,23 +14,27 @@ class LoginViewController: UIViewController {
     let alertController = UIAlertController(title: "Username or password is empty", message: "", preferredStyle: .alert)
 
     @IBAction func signupButton(_ sender: Any) {
-        if !usernameText.hasText {
+        if (!usernameText.hasText || !passwordText.hasText) {
             present(alertController, animated: true) {
                 // optional code for what happens after the alert controller has finished presenting
             }
         }
         else {
             registerUser()
+            //self.performSegue(withIdentifier: "loginSegue", sender: nil)
+
         }
     }
     @IBAction func loginButton(_ sender: Any) {
-        if !passwordText.hasText {
+        if (!passwordText.hasText || !usernameText.hasText) {
             present(alertController, animated: true) {
                 // optional code for what happens after the alert controller has finished presenting
             }
         }
         else {
             loginUser()
+            //self.performSegue(withIdentifier: "loginSegue", sender: nil)
+
         }
     }
     
@@ -60,9 +64,17 @@ class LoginViewController: UIViewController {
         // call sign up function on the object
         newUser.signUpInBackground { (success: Bool, error: Error?) in
             if let error = error {
-                print(error.localizedDescription)
+                let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
+                    // handle response here.
+                }
+                alertController.addAction(OKAction)
+                self.present(alertController, animated: true) {
+                    // optional code for what happens after the alert controller has finished presenting
+                }
             } else {
                 print("User Registered successfully")
+                self.performSegue(withIdentifier: "loginSegue", sender: nil)
                 // manually segue to logged in view
             }
         }
@@ -75,9 +87,17 @@ class LoginViewController: UIViewController {
         
         PFUser.logInWithUsername(inBackground: username, password: password) { (user: PFUser?, error: Error?) in
             if let error = error {
-                print("User log in failed: \(error.localizedDescription)")
+                let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
+                    // handle response here.
+                }
+                alertController.addAction(OKAction)
+                self.present(alertController, animated: true) {
+                    // optional code for what happens after the alert controller has finished presenting
+                }
             } else {
                 print("User logged in successfully")
+                self.performSegue(withIdentifier: "loginSegue", sender: nil)
                 // display view controller that needs to shown after successful login
             }
         }
